@@ -1,8 +1,9 @@
 \documentclass[pdf]{beamer}
 \usepackage{pifont}
 \mode<presentation>{}
-\title{Identifying Environment Related Faults with CrashSimulator}
-\author{Preston Moore}
+\title{Charting a Course Through Uncertain Environments: SEA Uses Past
+Problems to Avoid Future Failures}
+\author{Preston Moore, Justin Cappos, Phyllis Frankl, Thomas Wies}
 \begin{document}
 
 
@@ -81,20 +82,21 @@
 \end{frame}
 
 
-\begin{frame}{CrashSimulator}
+\begin{frame}{Simulating Environmental Anomalies (SEA)}
   \begin{itemize}
-  \item{CrashSimulator is a set of techniques and a tool for:}
+  \item{SEA allows its users to:}
     \begin{itemize}
-    \item{Generically capturing and encoding unusual environmental conditions}
-    \item{Injecting these conditions into an execution of an application under
-        test}
-    \item{Assessing whether the application handled the unusual condition correctly or not}
+    \item{Generically capture and encode unusual environmental
+      conditions (referred to as ``anomalies''}
+    \item{Expose a running application to simulated anomalies}
+    \item{Assess whether or not the application may be responding this
+      simulation}
     \end{itemize}
   \end{itemize}
 \end{frame}
 
 
-\begin{frame}{The Key Idea Behind CrashSimulator's Technique}
+\begin{frame}{The Key Idea Behind SEA}
   \begin{itemize}
   \item{In Linux (and other operating systems), an application interacts with its environment
       through system calls to the operating system}
@@ -386,6 +388,5 @@ Loss} & {\bf Fill Disk} \\
       both popular applications and libraries}
   \end{itemize}
 \end{frame}
-     
 
 \end{document}
