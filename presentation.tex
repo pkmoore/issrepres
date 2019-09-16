@@ -1,0 +1,391 @@
+\documentclass[pdf]{beamer}
+\usepackage{pifont}
+\mode<presentation>{}
+\title{Identifying Environment Related Faults with CrashSimulator}
+\author{Preston Moore}
+\begin{document}
+
+
+\begin{frame}
+  \titlepage{}
+\end{frame}
+
+
+\begin{frame}{How do Environments Affect Execution?}
+  \begin{itemize}
+  \item{Programs do not execute in isolation}
+  \item{Instead, they operate:}
+    \begin{itemize}
+    \item{On the inputs they are provided}
+    \item{\textit{In the context of the environment where they are executed}}
+    \end{itemize}
+    \item{Developers have become very good at testing applications by
+        manipulating inputs}
+      \begin{itemize}
+        \item{But environments affect execution as well}
+      \end{itemize}
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}{What Does an Environment Provide to an Application?}
+  \begin{itemize}
+  \item{An implicit input in the form of environment variables, file
+      contents, and other data accessible by the application}
+  \item{An implementation of the executable resources on which an application depends}
+    \begin{itemize}
+    \item{e.g. libraries, callable OS functions}
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Environments Differ on Many Levels}
+  \begin{itemize}
+  \item{Versions of libraries and software dependencies}
+  \item{Condition of the network on which the application relies}
+  \item{Operating system states, which can vary}
+    \begin{itemize}
+    \item{\textit{e.g.\ filesystem state, environment variable values}}
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Environmental Variations Can Reveal Bugs!}
+  An application may fail if:
+  \begin{itemize}
+  \item{A file it needs is missing}
+  \item{It can not handle unusual filesystem configurations}
+  \item{It does not handle possible network performance issues}
+
+    % \item{Weird environmental conditions may be uncommon so developers do not
+    %   know that they need to handle them!}
+      \end{itemize}
+      Failure to deal with these conditions results in incorrect behavior --- i.e.\ bugs.
+
+      These bugs are hard to identify because setting up different environments is
+      expensive.
+\end{frame}
+
+
+\begin{frame}{The Typical Deployment Scenario For A New Version of an Application}
+  \begin{itemize}
+  \item{Applications are tested under ideal conditions}
+  \item{Bugs do not present themselves until an application has
+      been deployed to other, less controlled environments}
+  \item{Bugs must then be diagnosed and fixes must be created and distributed}
+  \item{What is needed is a way to test how applications react to particular
+      environmental conditions \textbf{BEFORE} they are deployed}
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}{CrashSimulator}
+  \begin{itemize}
+  \item{CrashSimulator is a set of techniques and a tool for:}
+    \begin{itemize}
+    \item{Generically capturing and encoding unusual environmental conditions}
+    \item{Injecting these conditions into an execution of an application under
+        test}
+    \item{Assessing whether the application handled the unusual condition correctly or not}
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}{The Key Idea Behind CrashSimulator's Technique}
+  \begin{itemize}
+  \item{In Linux (and other operating systems), an application interacts with its environment
+      through system calls to the operating system}
+  \item{The idiosyncrasies in results of these system calls represent (and
+      result from) unusual environmental conditions}
+  \item{e.g. Poor network performance may involve network-related system
+      calls timing out; filesystem issues may result in filesystem-related system
+      calls failing or returning unexpected results}
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Steps Required to Implement CrashSimulator}
+  \begin{itemize}
+  \item{Record system call trace of application running in an anomalous
+      environment}
+  \item{Analyze the trace to identify system call results are
+      indicative of the environment's anomalous conditions}
+  \item{Inject the results into an execution of the application being tested}
+  \item{Assess how the application responds}
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Injecting Anomalous System Call Results into an Execution}
+  \begin{itemize}
+  \item{Record trace of application under test}
+  \item{Perturb trace so it now contains anomalous system call results}
+    \begin{itemize}
+    \item{Some mutations can be done programmatically}
+    \item{Some mutations require manual effort (at this time)}
+    \end{itemize}
+  \item{Replay execution of application using mutated trace}
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}{An Example - Injecting the ``Absence'' of a File}
+  \begin{itemize}
+  \item{Consider an application that depends on reading from file F}
+  \end{itemize}
+
+  Normal open: open(F) = 3
+
+  \begin{itemize}
+  \item{Consider this application running in an environment where F is absent}
+  \end{itemize}
+
+  File is missing: open(F) = -1 ENOENT
+
+  \begin{itemize}
+  \item{For any open call, modify return value to -1 ENOENT to simulate the
+      target file being absent}
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Replaying a System Call: The Ideal Case}
+  \begin{itemize}
+  \item{Intercept the system call and reproduce its results and side effects}
+    \begin{itemize}
+    \item{All ``simple'' system calls}
+    \item{All system calls involving file descriptors that do not really exist}
+      \begin{itemize}
+      \item{That is, file descriptors produced from system calls that we
+          previously intercepted and handled}
+      \end{itemize}
+    \end{itemize}
+  \item{Convert system call into a call to getpid()}
+  \item{Parse corresponding line from system call trace}
+  \item{Update register values and memory contents to reflect the results we
+      \textbf{parsed out of the trace}}
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Replaying a System Call: When The Ideal Case Does Not Work}
+  \begin{itemize}
+  \item{The effects of some system calls are too complex to deal with}
+    \begin{itemize}
+    \item{e.g.\ mmap()}
+    \end{itemize}
+  \item{In this case we allow them to be executed natively by:}
+    \begin{itemize}
+      \item{Instructing ptrace to allow the application to execute until the
+          next system call}
+      \item{Checking upcoming system call to ensure it matches the corresponding
+          line from the trace being replayed}
+      \item{Restarting execution of the application, thereby allowing it to
+          actually make a real system call}
+      \item{Checking the results to ensure they, too, match the results from the
+          corresponding line in the trace being replayed}
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Replaying a System Call Trace}
+  \begin{itemize}
+  \item{Execute application}
+  \item{Use Linux's Ptrace facilities to interrupt execution at every system
+      call}
+  \item{Adjust program state to match contents of system call trace}
+  \item{Because replay process ensures system calls respond the same way as they
+      did when the trace was recorded, the application will follow the same
+      execution}
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Assessing the Response of an Application}
+  \begin{itemize}
+  \item{If an application changes its system call behavior, the replay diverges,
+      i.e. execution no longer matches the trace}
+  \item{This means the application may be trying to handle the anomalous behavior}
+    \begin{itemize}
+    \item{\textit{Possibly correct behavior}}
+    \end{itemize}
+  \item{If an application does not change its system call behavior, replay
+      continues}
+    \begin{itemize}
+    \item{\textit{Application has not made an effort to handle anomalous conditions}}
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Proof of Concept Implementation of CrashSimulator}
+
+  Implementation Building Blocks:
+
+  \begin{itemize}
+  \item{32-bit Linux}
+  \item{Python Orchestration}
+    \begin{itemize}
+    \item{Keep Trace and Execution in Sync}
+    \end{itemize}
+  \item{C Python Module}
+    \begin{itemize}
+    \item{Ptrace and Structuring Data}
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Anomalies Used}
+  \begin{itemize}
+  \item{Unexpected Linux File Types}
+  \item{Cross-disk File Movement}
+  \item{Extremely Long Network Timeouts}
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Unexpected Linux File Types}
+  \begin{itemize}
+  \item{Linux provides different types of files with different capabilities}
+  \item{Application should confirm file type before processing a file}
+  \item{Otherwise, problems:}
+    \begin{itemize}
+    \item{Applications hang on FIFOs files}
+    \item{Applications consume disk space/memory/etc. processing ``infinitely
+        large'' files}
+    \end{itemize}
+  \item{Found bugs in coreutils utilities and gnupg}
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Unusual File Type Bugs}
+  \tiny{}
+    \begin{tabular}[H]{l  l  |  l  l  l  l  l  l  l}
+        Application & Condition Tested           & IFREG        & IFDIR        & IFCHR     & IFBLK    & FIFO      & IFLNK    & IFSOCK\\
+\hline
+        Aspell      & Dictionary File            & \ding{104}  & \ding{55}  & \ding{51}  & \ding{55} & \ding{55} & \ding{55} & \ding{55}\\
+        Aspell      & File being checked         & \ding{104}  & \ding{55}  & \ding{51}  & \ding{55} & \ding{55} & \ding{55} & \ding{55}\\
+        gnu-gpg     & secring.gpg                & \ding{104}  & \ding{55}  & \ding{55}  & \ding{55} & \ding{55} & \ding{55} & \ding{55}\\
+        vim         & File being opened          & \ding{104}  & \ding{51}  & \ding{51}  & \ding{51} & \ding{51} & \ding{51} & \ding{55}\\
+        nano        & File being opened          & \ding{104}  & \ding{51}  & \ding{51}  & \ding{51} & \ding{55} & \ding{55} & \ding{55}\\
+        sed         & File being edited          & \ding{104}  & \ding{55}  & \ding{51}  & \ding{55} & \ding{55} & \ding{55} & \ding{55}\\
+        df          & /proc                      & \ding{55}   & \ding{104} & \ding{55}  & \ding{55} & \ding{55} & \ding{55} & \ding{55}\\
+        wc          & File being checked         & \ding{104}  & \ding{51}  & \ding{51}  & \ding{51} & \ding{51} & \ding{51} & \ding{51}\\
+        du          & Directory being checked    & \ding{51}   & \ding{104} & \ding{51}  & \ding{51} & \ding{51} & \ding{51} & \ding{51}\\
+        install     & File being installed       & \ding{104}  & \ding{51}  & \ding{55}  & \ding{55} & \ding{55} & \ding{51} & \ding{55}\\
+        fmt         & File being formatted       & \ding{104}  & \ding{55}  & \ding{51}  & \ding{55} & \ding{55} & \ding{55} & \ding{55}\\
+        od          & File being dumped          & \ding{104}  & \ding{55}  & \ding{51}  & \ding{55} & \ding{55} & \ding{55} & \ding{55}\\
+        ptx         & File being read            & \ding{104}  & \ding{51}  & \ding{51}  & \ding{51} & \ding{51} & \ding{51} & \ding{51}\\
+        comm        & Second file being          & \ding{104}  & \ding{55}  & \ding{51}  & \ding{55} & \ding{55} & \ding{55} & \ding{55}\\
+        pr          & File being read            & \ding{104}  & \ding{55}  & \ding{55}  & \ding{55} & \ding{55} & \ding{55} & \ding{55}\\
+\hline
+        readlink    & Link being evaluated       & \textbf{N/A} & & & & & & \\
+        unlink      & File being unlinked        & \textbf{N/A} & & & & & & \\
+    \end{tabular}
+    \begin{itemize}
+    \item{\ding{104} --- Unmodified value}
+    \item{\ding{55} --- Application fails to recognize condition}
+    \item{\ding{51} --- Application recognizes condition}
+    \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Cross-Disk File Movement Discussion}
+  \begin{itemize}
+  \item{Moving a file around on the same disk is trivial: rename() system
+      call}
+  \item{This system call does not support moving a file from one disk to
+      another}
+  \item{An application must detect this situation and either fail
+      gracefully or perform the file move ``manually''}
+  \item{Otherwise, problems:}
+    \begin{itemize}
+    \item{Loss of file contents}
+    \item{Loss of file metadata}
+    \item{Race conditions}
+    \item{Filling of disk space}
+    \end{itemize}
+  \item{Race condition in Python's shutil}
+  \item{Loss of extended file attributes in Rust's std::fs}
+  \item{Fill disk space bug in C++'s Boost::filesystem}
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Cross-Disk File Movement Results}
+  \tiny{}
+    \begin{tabular}{l p{1cm} p{1cm} p{1.2cm} p{1cm}}
+        Application     & Source Replaced & Preserve Xattrs & Preserve Timestamps & Copying Devices\\
+\hline
+        mv              & Correct             & Correct         & Correct             & Correct\\
+        mmv             & Correct             & {\bf Sec. Flaw} & {\bf Time
+Loss} & Correct\\
+        install         & Correct             & {\bf Sec. Flaw} & {\bf Time
+Loss} & {\bf Fill Disk} \\
+        perl File::Copy & Correct             & {\bf Sec. Flaw} & {\bf Time
+Loss} & {\bf Fill Disk} \\
+        shutils         & {\bf Corrupt}	& {\bf Sec. Flaw} 	& Correct             & Correct\\
+        rust            & Correct             & {\bf Sec. Flaw} & {\bf Time
+Loss} & {\bf Fill Disk} \\
+        boost::copyfile & {\bf Corrupt}	      & {\bf Sec. Flaw} & {\bf Time
+Loss} & {\bf Fill Disk} \\
+    \end{tabular}
+\end{frame}
+
+
+\begin{frame}{Extremely Long Network Timeouts Discussion}
+  \begin{itemize}
+  \item{Applications that do not configure reasonable timeouts are vulnerable
+      to a malicious communication participant dragging communication out over a
+      long period of time}
+  \item{This process ties up resources and greatly lowers the effort required to
+      consume all available resources, preventing legitimate access}
+  \item{``Slowloris'' Denial of Service attack against http servers}
+    \begin{itemize}
+    \item{involves keeping a connection open to a vulnerable server by
+        introducing just-below-the-timeout delays between sending HTTP headers}
+        \end{itemize}
+  \item{MANY Python HTTP/HTTPS/web modules vulnerable}
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Extremely Long Network Timeouts Results}
+  \tiny{}
+  \begin{tabular}{l | l}
+    {\bf Application}              & {\bf Analysis Result}\\
+    wget                     & Overly long timeout supplied to {\tt select()}, vulnerable\\
+    ftp                      & No {\tt poll()} or {\tt select()}, no timeout set, vulnerable\\
+    telnet                   & {\tt select()} specifies no timeout, vulnerable\\
+    urllib http              & No {\tt poll()} or {\tt select()}, no timeout set, vulnerable\\
+    urllib ftp               & No {\tt poll()} or {\tt select()}, no timeout set, vulnerable\\
+    ftplib                   & No {\tt poll()} or {\tt select()}, no timeout set, vulnerable\\
+    httplib                  & No {\tt poll()} or {\tt select()}, no timeout set, vulnerable\\
+    requests                 & No {\tt poll()} or {\tt select()}, no timeout set, vulnerable\\
+    urllib3                  & No {\tt poll()} or {\tt select()}, no timeout set, vulnerable\\
+    python-websocket-client  & No {\tt poll()} or {\tt select()}, no timeout set, vulnerable\\
+  \end{tabular}
+\end{frame}
+
+
+\begin{frame}{In Conclusion}
+  \begin{itemize}
+  \item{An application's environment is an often-neglected cause of bugs}
+  \item{These bugs are difficult to find pre-deployment because replicating
+      unusual environments is expensive}
+  \item{CrashSimulator provides a technique for simulating these unusual
+      environments in order to identify bugs before deployment, thereby
+      saving time and expense}
+  \item{In tests, CrashSimulator has found these types of environmental bugs in
+      both popular applications and libraries}
+  \end{itemize}
+\end{frame}
+     
+
+\end{document}
