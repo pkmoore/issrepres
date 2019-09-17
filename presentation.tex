@@ -143,7 +143,7 @@ Problems to Avoid Future Failures}
     \item{An application runs fails an environment because problematic
       feature $X$ is present}
     \item{$X$ is analyzed to determine how it causes environmental
-      interactions to differ (we call this difference $\Delta X$}
+        interactions to differ (we call this difference $\Delta X$)}
     \item{$\Delta X$ is used to construct a mutator \textit{mutX()} and
       a checker \textit{checkX()}}
     \item{\textit{mutX()} is used to mutate the system calls of other
@@ -359,6 +359,13 @@ Problems to Avoid Future Failures}
 \end{frame}
 
 
+\begin{frame}{Cross-Disk File Movement - The Takeaway}
+  \begin{itemize}
+    \item{Well known, popular applications are not moving files correctly}
+  \end{itemize}
+\end{frame}
+
+
 \begin{frame}{Extremely Long Network Timeouts Discussion}
   \begin{itemize}
   \item{Applications that do not configure reasonable timeouts are vulnerable
@@ -372,13 +379,6 @@ Problems to Avoid Future Failures}
         introducing just-below-the-timeout delays between sending HTTP headers}
         \end{itemize}
   \item{MANY Python HTTP/HTTPS/web modules vulnerable}
-  \end{itemize}
-\end{frame}
-
-
-\begin{frame}{Cross-Disk File Movement - The Takeaway}
-  \begin{itemize}
-    \item{Well known, popular applications are not moving files correctly}
   \end{itemize}
 \end{frame}
 
