@@ -273,15 +273,19 @@ Problems to Avoid Future Failures}
 
   \begin{itemize}
   \item{32-bit Linux}
-  \item{Python Orchestration}
-    \begin{itemize}
-    \item{Keep Trace and Execution in Sync}
-    \end{itemize}
+  \item{Modified version rr record-and-replay debugger}
+  \item{Python Process Supervisor}
   \item{C Python Module}
     \begin{itemize}
-    \item{Ptrace and Structuring Data}
+    \item{Manipulation of System Calls using Ptrace}
+    \item{Structuring Data}
     \end{itemize}
   \end{itemize}
+\end{frame}
+
+
+\begin{frame}{CrashSimulator's Architecture}
+    Diagram from paper here
 \end{frame}
 
 
@@ -290,15 +294,12 @@ Problems to Avoid Future Failures}
   \item{Unexpected Linux File Types}
   \item{Cross-disk File Movement}
   \item{Extremely Long Network Timeouts}
+  \item{Additional Features:}
+    \begin{itemize}
+    \item{Null Mutator}
+    \item{Default Checker}
+    \end{itemize}
   \end{itemize}
-\end{frame}
-
-
-\begin{frame}{Additional Features}
-  \begin{itemize}
-  \item{Null Mutator}
-  \item{Default Checker}
-  \end{itemize{
 \end{frame}
 
 
@@ -354,23 +355,7 @@ Problems to Avoid Future Failures}
 
 
 \begin{frame}{Cross-Disk File Movement Results}
-  \tiny{}
-    \begin{tabular}{l p{1cm} p{1cm} p{1.2cm} p{1cm}}
-        Application     & Source Replaced & Preserve Xattrs & Preserve Timestamps & Copying Devices\\
-\hline
-        mv              & Correct             & Correct         & Correct             & Correct\\
-        mmv             & Correct             & {\bf Sec. Flaw} & {\bf Time
-Loss} & Correct\\
-        install         & Correct             & {\bf Sec. Flaw} & {\bf Time
-Loss} & {\bf Fill Disk} \\
-        perl File::Copy & Correct             & {\bf Sec. Flaw} & {\bf Time
-Loss} & {\bf Fill Disk} \\
-        shutils         & {\bf Corrupt}	& {\bf Sec. Flaw} 	& Correct             & Correct\\
-        rust            & Correct             & {\bf Sec. Flaw} & {\bf Time
-Loss} & {\bf Fill Disk} \\
-        boost::copyfile & {\bf Corrupt}	      & {\bf Sec. Flaw} & {\bf Time
-Loss} & {\bf Fill Disk} \\
-    \end{tabular}
+  Include table here
 \end{frame}
 
 
@@ -399,27 +384,14 @@ Loss} & {\bf Fill Disk} \\
 
 
 \begin{frame}{Extremely Long Network Timeouts Results}
-  \tiny{}
-  \begin{tabular}{l | l}
-    {\bf Application}              & {\bf Analysis Result}\\
-    wget                     & Overly long timeout supplied to {\tt select()}, vulnerable\\
-    ftp                      & No {\tt poll()} or {\tt select()}, no timeout set, vulnerable\\
-    telnet                   & {\tt select()} specifies no timeout, vulnerable\\
-    urllib http              & No {\tt poll()} or {\tt select()}, no timeout set, vulnerable\\
-    urllib ftp               & No {\tt poll()} or {\tt select()}, no timeout set, vulnerable\\
-    ftplib                   & No {\tt poll()} or {\tt select()}, no timeout set, vulnerable\\
-    httplib                  & No {\tt poll()} or {\tt select()}, no timeout set, vulnerable\\
-    requests                 & No {\tt poll()} or {\tt select()}, no timeout set, vulnerable\\
-    urllib3                  & No {\tt poll()} or {\tt select()}, no timeout set, vulnerable\\
-    python-websocket-client  & No {\tt poll()} or {\tt select()}, no timeout set, vulnerable\\
-  \end{tabular}
+  Include results table here
 \end{frame}
 
 
 \begin{frame}{Extremely Long Network Timeouts - The Takeaway}
   \begin{itemize}
-    \item{Major applications and libraries are vulnerable to a known
-      problem}
+    \item{Major applications and libraries are vulnerable to maliciously
+      timed communications}
   \end{itemize}
 \end{frame}
 
