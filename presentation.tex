@@ -11,13 +11,16 @@ Problems to Avoid Future Failures}
   \titlepage{}
 \end{frame}
 
+
 \begin{frame}{Deployment Bugs are Frequent and Expensive}
   \begin{itemize}
+    \item{On this slide I should I mention the ClusterHQ/Oracle/Microsoft
+      studies we talk about in the paper intro?}
     \item{A major factor in this is differing environments...}
   \end{itemize}
 \end{frame}
 
-\begin{frame}{How do Environments Affect ?}
+\begin{frame}{How Does an Environment Influence an Application?}
   \begin{itemize}
   \item{Programs do not execute in isolation}
   \item{Instead, they operate:}
@@ -100,7 +103,7 @@ Problems to Avoid Future Failures}
   \item{SEA allows its users to:}
     \begin{itemize}
     \item{Generically capture and encode unusual environmental
-      conditions (referred to as ``anomalies''}
+      conditions (referred to as ``anomalies'')}
     \item{Expose a running application to simulated anomalies}
     \item{Assess whether or not the application may be responding this
       simulation}
@@ -109,35 +112,68 @@ Problems to Avoid Future Failures}
 \end{frame}
 
 
-\begin{frame}{The Key Idea}
+\begin{frame}{The Key Ideas}
   \begin{itemize}
-  \item{In Linux (and other operating systems), an application interacts with its environment
-      through system calls to the operating system}
-  \item{The idiosyncrasies in results of these system calls represent (and
-      result from) unusual environmental conditions}
-  \item{e.g. Poor network performance may involve network-related system
-      calls timing out; filesystem issues may result in filesystem-related system
-      calls failing or returning unexpected results}
- \end{itemize}
+  \item{Problematic environmental properties can often be detected in an
+    application's}
+    \begin{itemize}
+    \item{function calls}
+    \item{system calls}
+    \item{other interactions}
+  \end{itemize}
+  \item{Exposing an application to these properties gives an idea of how
+    likely it is to fail once deployed}
+  \end{itemize}
 \end{frame}
 
 
 \begin{frame}{SEA on the Half-Shell}
   \begin{enumerate}
   \item{Record an application as it fails in an anomalous environment}
-  \item{Analyze the recording to identify
-      to determine how the failure is present in the application's system
-          calls}
-  \item{Simulate this failure on another application and assess how it
-      responds}
+  \item{Analyze the recording to identify what aspects of the environment
+    (known as an anomaly) caused the failure}
+  \item{Simulate the anomaly in the presence of another application}
+  \item{Assess how the application responds}
   \end{enumerate}
 \end{frame}
 
 
 \begin{frame}{Generic Example}
   \begin{enumerate}
-  \item{Generic example goes here}
+    \item{An application runs fails an environment because problematic
+      feature $X$ is present}
+    \item{$X$ is analyzed to determine how it causes environmental
+      interactions to differ (we call this difference $\Delta X$}
+    \item{$\Delta X$ is used to construct a mutator \textit{mutX()} and
+      a checker \textit{checkX()}}
+    \item{\textit{mutX()} is used to mutate the system calls of other
+      applications in order to simulate the presence of $X$}
+    \item{\textit{checkX()} is used to evaluate the application's response
+      to $X$}
   \end{enumerate}
+\end{frame}
+
+
+\begin{frame}{An Concrete Example - Simulating the ``Absence'' of a File}
+  \begin{itemize}
+  \item{Consider an application that depends on reading from file F}
+  \end{itemize}
+
+  Normal open: open(F) = 3
+
+  File is missing: open(F) = -1 ENOENT
+
+  \begin{itemize}
+  \item{In this case:}
+    \begin{itemize}
+      \item{$X$ is the fact that F is missing}
+      \item{$\Delta X$ is changing the result of open to -1 ENOENT}
+      \item{\textit{mutX()} modifies the result of open() calls of another
+        application to return -1 ENOENT}
+      \item{\textit{checkX()} determines whether the application has
+        recognized the failing return value}
+    \end{itemize}
+  \end{itemize}
 \end{frame}
 
 
@@ -157,26 +193,6 @@ Problems to Avoid Future Failures}
     \item{Some mutations require manual effort (at this time)}
     \end{itemize}
   \item{Replay execution of application using mutated trace}
-  \end{itemize}
-\end{frame}
-
-
-\begin{frame}{An Example - Injecting the ``Absence'' of a File}
-  \begin{itemize}
-  \item{Consider an application that depends on reading from file F}
-  \end{itemize}
-
-  Normal open: open(F) = 3
-
-  \begin{itemize}
-  \item{Consider this application running in an environment where F is absent}
-  \end{itemize}
-
-  File is missing: open(F) = -1 ENOENT
-
-  \begin{itemize}
-  \item{For any open call, modify return value to -1 ENOENT to simulate the
-      target file being absent}
   \end{itemize}
 \end{frame}
 
