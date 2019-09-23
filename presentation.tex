@@ -22,14 +22,14 @@ Problems to Avoid Future Failures}
 
 \begin{frame}{How Does an Environment Influence an Application?}
   \begin{itemize}
-  \item{Programs do not execute in isolation}
-  \item{Instead, they operate:}
-    \begin{itemize}
-    \item{On the inputs they are provided}
-    \item{\textit{In the context of the environment where they are executed}}
-    \end{itemize}
+    \item{Programs do not execute in isolation}
+    \item{Instead, they operate:}
+      \begin{itemize}
+        \item{On the inputs they are provided}
+        \item{\textit{In the context of the environment where they are executed}}
+      \end{itemize}
     \item{Developers have become very good at testing applications by
-        manipulating inputs}
+      manipulating inputs}
       \begin{itemize}
         \item{But environments affect execution as well}
       \end{itemize}
@@ -39,24 +39,24 @@ Problems to Avoid Future Failures}
 
 \begin{frame}{What Does an Environment Provide to an Application?}
   \begin{itemize}
-  \item{An implicit input in the form of environment variables, file
+    \item{An implicit input in the form of environment variables, file
       contents, and other data accessible by the application}
-  \item{An implementation of the executable resources on which an application depends}
-    \begin{itemize}
-    \item{e.g. libraries, callable OS functions}
-    \end{itemize}
+    \item{An implementation of the executable resources on which an application depends}
+      \begin{itemize}
+        \item{e.g. libraries, callable OS functions}
+      \end{itemize}
   \end{itemize}
 \end{frame}
 
 
 \begin{frame}{Environments Differ on Many Levels}
   \begin{itemize}
-  \item{Versions of libraries and software dependencies}
-  \item{Condition of the network on which the application relies}
-  \item{Operating system states, which can vary}
-    \begin{itemize}
-    \item{\textit{e.g.\ filesystem state, environment variable values}}
-    \end{itemize}
+    \item{Versions of libraries and software dependencies}
+    \item{Condition of the network on which the application relies}
+    \item{Operating system states, which can vary}
+      \begin{itemize}
+        \item{\textit{e.g.\ filesystem state, environment variable values}}
+      \end{itemize}
   \end{itemize}
 \end{frame}
 
@@ -64,17 +64,17 @@ Problems to Avoid Future Failures}
 \begin{frame}{Environmental Variations Can Reveal Bugs!}
   An application may fail if:
   \begin{itemize}
-  \item{A file it needs is missing}
-  \item{It can not handle unusual filesystem configurations}
-  \item{It does not handle possible network performance issues}
+    \item{A file it needs is missing}
+    \item{It can not handle unusual filesystem configurations}
+    \item{It does not handle possible network performance issues}
 
-    % \item{Weird environmental conditions may be uncommon so developers do not
-    %   know that they need to handle them!}
-      \end{itemize}
-      Failure to deal with these conditions results in incorrect behavior --- i.e.\ bugs.
+      % \item{Weird environmental conditions may be uncommon so developers do not
+      %   know that they need to handle them!}
+  \end{itemize}
+  Failure to deal with these conditions results in incorrect behavior --- i.e.\ bugs.
 
-      These bugs are hard to identify because setting up different environments is
-      expensive.
+  These bugs are hard to identify because setting up different environments is
+  expensive.
 \end{frame}
 
 
@@ -100,40 +100,40 @@ Problems to Avoid Future Failures}
 
 \begin{frame}{Simulating Environmental Anomalies (SEA)}
   \begin{itemize}
-  \item{SEA allows its users to:}
-    \begin{itemize}
-    \item{Generically capture and encode unusual environmental
-      conditions (referred to as ``anomalies'')}
-    \item{Expose a running application to simulated anomalies}
-    \item{Assess whether or not the application may be responding this
-      simulation}
-    \end{itemize}
+    \item{SEA allows its users to:}
+      \begin{itemize}
+        \item{Generically capture and encode unusual environmental
+          conditions (referred to as ``anomalies'')}
+        \item{Expose a running application to simulated anomalies}
+        \item{Assess whether or not the application may be responding this
+          simulation}
+      \end{itemize}
   \end{itemize}
 \end{frame}
 
 
 \begin{frame}{The Key Ideas}
   \begin{itemize}
-  \item{Problematic environmental properties can often be detected in an
-    application's}
-    \begin{itemize}
-    \item{function calls}
-    \item{system calls}
-    \item{other interactions}
-  \end{itemize}
-  \item{Exposing an application to these properties gives an idea of how
-    likely it is to fail once deployed}
+    \item{Problematic environmental properties can often be detected in an
+      application's}
+      \begin{itemize}
+        \item{function calls}
+        \item{system calls}
+        \item{other interactions}
+      \end{itemize}
+    \item{Exposing an application to these properties gives an idea of how
+      likely it is to fail once deployed}
   \end{itemize}
 \end{frame}
 
 
 \begin{frame}{SEA on the Half-Shell}
   \begin{enumerate}
-  \item{Record an application as it fails in an anomalous environment}
-  \item{Analyze the recording to identify what aspects of the environment
-    (known as an anomaly) caused the failure}
-  \item{Simulate the anomaly in the presence of another application}
-  \item{Assess how the application responds}
+    \item{Record an application as it fails in an anomalous environment}
+    \item{Analyze the recording to identify what aspects of the environment
+      (known as an anomaly) caused the failure}
+    \item{Simulate the anomaly in the presence of another application}
+    \item{Assess how the application responds}
   \end{enumerate}
 \end{frame}
 
@@ -143,7 +143,7 @@ Problems to Avoid Future Failures}
     \item{An application runs fails an environment because problematic
       feature $X$ is present}
     \item{$X$ is analyzed to determine how it causes environmental
-        interactions to differ (we call this difference $\Delta X$)}
+      interactions to differ (we call this difference $\Delta X$)}
     \item{$\Delta X$ is used to construct a mutator \textit{mutX()} and
       a checker \textit{checkX()}}
     \item{\textit{mutX()} is used to mutate the system calls of other
@@ -156,7 +156,7 @@ Problems to Avoid Future Failures}
 
 \begin{frame}{An Concrete Example - Simulating the ``Absence'' of a File}
   \begin{itemize}
-  \item{Consider an application that depends on reading from file F}
+    \item{Consider an application that depends on reading from file F}
   \end{itemize}
 
   Normal open: open(F) = 3
@@ -164,42 +164,42 @@ Problems to Avoid Future Failures}
   File is missing: open(F) = -1 ENOENT
 
   \begin{itemize}
-  \item{In this case:}
-    \begin{itemize}
-      \item{$X$ is the fact that F is missing}
-      \item{$\Delta X$ is changing the result of open to -1 ENOENT}
-      \item{\textit{mutX()} modifies the result of open() calls of another
-        application to return -1 ENOENT}
-      \item{\textit{checkX()} determines whether the application has
-        recognized the failing return value}
-    \end{itemize}
+    \item{In this case:}
+      \begin{itemize}
+        \item{$X$ is the fact that F is missing}
+        \item{$\Delta X$ is changing the result of open to -1 ENOENT}
+        \item{\textit{mutX()} modifies the result of open() calls of another
+          application to return -1 ENOENT}
+        \item{\textit{checkX()} determines whether the application has
+          recognized the failing return value}
+      \end{itemize}
   \end{itemize}
 \end{frame}
 
 
 \begin{frame}{Identifying and Encoding Anomalies}
   \begin{itemize}
-  \item{Anomaly is found by:}
-    \begin{itemize}
-    \item{Examining previous failures in the target environment}
-    \item{Mining public bug trackers}
-    \item{Exploring the output of other tools that find bugs in other
-      domains}
-    \end{itemize}
-  \item{Set of modifications needed to simulate is generated from anomaly}
-  \item{Modifications are used to construct a checker and mutator}
-  \item{Similar amount of effort to constructing a unit test}
+    \item{Anomaly is found by:}
+      \begin{itemize}
+        \item{Examining previous failures in the target environment}
+        \item{Mining public bug trackers}
+        \item{Exploring the output of other tools that find bugs in other
+          domains}
+      \end{itemize}
+    \item{Set of modifications needed to simulate is generated from anomaly}
+    \item{Modifications are used to construct a checker and mutator}
+    \item{Similar amount of effort to constructing a unit test}
   \end{itemize}
 \end{frame}
 
 
 \begin{frame}{Mutating System Call Results}
   \begin{itemize}
-  \item{Execute application while monitoring its system call activity}
-  \item{Mutator receives system calls as they occur and watches for pattern
-    indicative of a simulation opportunity}
-  \item{Once opportunity arrives, mutator modifies results and side effects
-    in order to simulate the anomaly}
+    \item{Execute application while monitoring its system call activity}
+    \item{Mutator receives system calls as they occur and watches for pattern
+      indicative of a simulation opportunity}
+    \item{Once opportunity arrives, mutator modifies results and side effects
+      in order to simulate the anomaly}
   \end{itemize}
 \end{frame}
 
@@ -259,12 +259,12 @@ Problems to Avoid Future Failures}
 
 \begin{frame}{Assessing the Response of an Application}
   \begin{itemize}
-  \item{Checker begins monitoring subsequent system call activity
-    after anomaly is simulated}
-  \item{Checker either accepts or rejects the execution based on the system
-    call activity it observes}
-  \item{The specifics of what is accepted or rejected depends on the nature
-    of the anomaly being simulated}
+    \item{Checker begins monitoring subsequent system call activity
+      after anomaly is simulated}
+    \item{Checker either accepts or rejects the execution based on the system
+      call activity it observes}
+    \item{The specifics of what is accepted or rejected depends on the nature
+      of the anomaly being simulated}
   \end{itemize}
 \end{frame}
 
@@ -274,62 +274,62 @@ Problems to Avoid Future Failures}
   Implementation Building Blocks:
 
   \begin{itemize}
-  \item{32-bit Linux}
-  \item{Modified version rr record-and-replay debugger}
-  \item{Python Process Supervisor}
-  \item{C Python Module}
-    \begin{itemize}
-    \item{Manipulation of System Calls using Ptrace}
-    \item{Structuring Data}
-    \end{itemize}
+    \item{32-bit Linux}
+    \item{Modified version rr record-and-replay debugger}
+    \item{Python Process Supervisor}
+    \item{C Python Module}
+      \begin{itemize}
+        \item{Manipulation of System Calls using Ptrace}
+        \item{Structuring Data}
+      \end{itemize}
   \end{itemize}
 \end{frame}
 
 
 \begin{frame}{CrashSimulator's Architecture}
-    Diagram from paper here
+  Diagram from paper here
 \end{frame}
 
 
 \begin{frame}{Anomalies Used}
   \begin{itemize}
-  \item{Unexpected Linux File Types}
-  \item{Cross-disk File Movement}
-  \item{Extremely Long Network Timeouts}
+    \item{Unexpected Linux File Types}
+    \item{Cross-disk File Movement}
+    \item{Extremely Long Network Timeouts}
   \end{itemize}
 \end{frame}
 
 
 \begin{frame}{Additional Features}
   \begin{itemize}
-  \item{Default Checker}
-  \item{Accepts or rejects executions based on whether or not the
-    application has changed its behavior in response to an anomaly}
+    \item{Default Checker}
+    \item{Accepts or rejects executions based on whether or not the
+      application has changed its behavior in response to an anomaly}
       \begin{itemize}
-      \item{Changed behavior -> possibly addressing anomaly -> accept}
-      \item{No change -> anomaly not recognized -> reject}
-      \item{This distinction proved sufficient in the majority of cases}
+        \item{Changed behavior -> possibly addressing anomaly -> accept}
+        \item{No change -> anomaly not recognized -> reject}
+        \item{This distinction proved sufficient in the majority of cases}
       \end{itemize}
-  \item{Null Mutator}
-  \begin{itemize}
-  \item{Performs no mutation but provides opportunity for a checker to
-    evaluate an unmodified execution}
-  \end{itemize}
+    \item{Null Mutator}
+      \begin{itemize}
+        \item{Performs no mutation but provides opportunity for a checker to
+          evaluate an unmodified execution}
+      \end{itemize}
   \end{itemize}
 \end{frame}
 
 
 \begin{frame}{Unexpected Linux File Types}
   \begin{itemize}
-  \item{Linux provides different types of files with different capabilities}
-  \item{Application should confirm file type before processing a file}
-  \item{Otherwise, problems:}
-    \begin{itemize}
-    \item{Applications hang on FIFOs files}
-    \item{Applications consume disk space/memory/etc. processing ``infinitely
-        large'' files}
-    \end{itemize}
-  \item{Found bugs in coreutils utilities and gnupg}
+    \item{Linux provides different types of files with different capabilities}
+    \item{Application should confirm file type before processing a file}
+    \item{Otherwise, problems:}
+      \begin{itemize}
+        \item{Applications hang on FIFOs files}
+        \item{Applications consume disk space/memory/etc. processing ``infinitely
+          large'' files}
+      \end{itemize}
+    \item{Found bugs in coreutils utilities and gnupg}
   \end{itemize}
 \end{frame}
 
@@ -350,22 +350,22 @@ Problems to Avoid Future Failures}
 
 \begin{frame}{Cross-Disk File Movement Discussion}
   \begin{itemize}
-  \item{Moving a file around on the same disk is trivial: rename() system
+    \item{Moving a file around on the same disk is trivial: rename() system
       call}
-  \item{This system call does not support moving a file from one disk to
+    \item{This system call does not support moving a file from one disk to
       another}
-  \item{An application must detect this situation and either fail
+    \item{An application must detect this situation and either fail
       gracefully or perform the file move ``manually''}
-  \item{Otherwise, problems:}
-    \begin{itemize}
-    \item{Loss of file contents}
-    \item{Loss of file metadata}
-    \item{Race conditions}
-    \item{Filling of disk space}
-    \end{itemize}
-  \item{Race condition in Python's shutil}
-  \item{Loss of extended file attributes in Rust's std::fs}
-  \item{Fill disk space bug in C++'s Boost::filesystem}
+    \item{Otherwise, problems:}
+      \begin{itemize}
+        \item{Loss of file contents}
+        \item{Loss of file metadata}
+        \item{Race conditions}
+        \item{Filling of disk space}
+      \end{itemize}
+    \item{Race condition in Python's shutil}
+    \item{Loss of extended file attributes in Rust's std::fs}
+    \item{Fill disk space bug in C++'s Boost::filesystem}
   \end{itemize}
 \end{frame}
 
@@ -384,17 +384,17 @@ Problems to Avoid Future Failures}
 
 \begin{frame}{Extremely Long Network Timeouts Discussion}
   \begin{itemize}
-  \item{Applications that do not configure reasonable timeouts are vulnerable
+    \item{Applications that do not configure reasonable timeouts are vulnerable
       to a malicious communication participant dragging communication out over a
       long period of time}
-  \item{This process ties up resources and greatly lowers the effort required to
+    \item{This process ties up resources and greatly lowers the effort required to
       consume all available resources, preventing legitimate access}
-  \item{``Slowloris'' Denial of Service attack against http servers}
-    \begin{itemize}
-    \item{involves keeping a connection open to a vulnerable server by
-        introducing just-below-the-timeout delays between sending HTTP headers}
-        \end{itemize}
-  \item{MANY Python HTTP/HTTPS/web modules vulnerable}
+    \item{``Slowloris'' Denial of Service attack against http servers}
+      \begin{itemize}
+        \item{involves keeping a connection open to a vulnerable server by
+          introducing just-below-the-timeout delays between sending HTTP headers}
+      \end{itemize}
+    \item{MANY Python HTTP/HTTPS/web modules vulnerable}
   \end{itemize}
 \end{frame}
 
@@ -414,13 +414,13 @@ Problems to Avoid Future Failures}
 
 \begin{frame}{In Conclusion}
   \begin{itemize}
-  \item{An application's environment is an often-neglected cause of bugs}
-  \item{These bugs are difficult to find pre-deployment because replicating
+    \item{An application's environment is an often-neglected cause of bugs}
+    \item{These bugs are difficult to find pre-deployment because replicating
       unusual environments is expensive}
-  \item{SEA helps find these bugs by simulating problematic environmental
+    \item{SEA helps find these bugs by simulating problematic environmental
       featuers in order to identify bugs before deployment, thereby
       saving time and expense}
-  \item{Our implementation of SEA, CrashSimualtor, has found these types
+    \item{Our implementation of SEA, CrashSimualtor, has found these types
       of environmental bugs in both popular applications and libraries}
   \end{itemize}
 \end{frame}
