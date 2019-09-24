@@ -1,5 +1,23 @@
 \documentclass[pdf]{beamer}
+\usepackage{booktabs}
+\usepackage{comment}
+\usepackage{float}
+\usepackage{lipsum}
 \usepackage{pifont}
+ \usepackage[english]{babel}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage[normalem]{ulem}
+\usepackage{xspace}
+\usepackage{datetime}
+\usepackage{hyperref}
+
+\newcommand{\tickmark}{\ding{51}}
+\newcommand{\xmark}{\ding{55}}
+
 \mode<presentation>{}
 \title{Charting a Course Through Uncertain Environments: SEA Uses Past
 Problems to Avoid Future Failures}
@@ -287,15 +305,21 @@ Problems to Avoid Future Failures}
 
 
 \begin{frame}{CrashSimulator's Architecture}
-  Diagram from paper here
+    \begin{figure}
+    \centering
+    \includegraphics[width = 0.9\textwidth]{images/architecture}
+  \end{figure}
 \end{frame}
 
 
-\begin{frame}{Anomalies Used}
+\begin{frame}{Architecture Discission}
   \begin{itemize}
-    \item{Unexpected Linux File Types}
-    \item{Cross-disk File Movement}
-    \item{Extremely Long Network Timeouts}
+    \item{rr replays application under test until simulation opportunity
+      arises}
+    \item{Modifications to rr allow complete process set of application to
+      be cloned at this point}
+    \item{CrashSimulator process supervisor attaches to cloned process set
+      and modifies system call results to simulate an anomaly}
   \end{itemize}
 \end{frame}
 
@@ -306,8 +330,8 @@ Problems to Avoid Future Failures}
     \item{Accepts or rejects executions based on whether or not the
       application has changed its behavior in response to an anomaly}
       \begin{itemize}
-        \item{Changed behavior -> possibly addressing anomaly -> accept}
-        \item{No change -> anomaly not recognized -> reject}
+        \item{Changed behavior: possibly addressing anomaly: accept}
+        \item{No change: anomaly not recognized: reject}
         \item{This distinction proved sufficient in the majority of cases}
       \end{itemize}
     \item{Null Mutator}
@@ -315,6 +339,15 @@ Problems to Avoid Future Failures}
         \item{Performs no mutation but provides opportunity for a checker to
           evaluate an unmodified execution}
       \end{itemize}
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Anomalies Used}
+  \begin{itemize}
+    \item{Unexpected Linux File Types}
+    \item{Cross-disk File Movement}
+    \item{Extremely Long Network Timeouts}
   \end{itemize}
 \end{frame}
 
@@ -335,12 +368,55 @@ Problems to Avoid Future Failures}
 
 
 \begin{frame}{Unusual File Type Bugs}
-  Include discussion and new results table here
-  % Mention aspell bug in particular
+\begin{table}[t]
+    \scriptsize{}
+    \begin{tabular}{l  l  |  l  l  l  l  l  l  l}
+    \toprule{}
+        Application       & Condition Tested           & Regular File           & Directory               & Character Device        & Block Device           & Named Pipe                 & Symbolic Link             & Socket File \\
+                          &                            &  (IFREG)               & (IFDIR)                 & (IFCHR)                 & (IFBLK)                & (IFIFO)                    & (IFLNK)                   & (IFSOCK)\\
+\hline
+        {\tt Aspell}      & Dictionary File            & --                     & X: \textit{FP}          & \tickmark: \textit{FN}  & X                      & X                          & X                         & X          \\
+        {\tt Aspell}      & File being checked         & --                     & X: \textit{FP}          & \tickmark               & X                      & X                          & X                         & X          \\
+        {\tt gnu-gpg}     & secring.gpg                & --                     & X                       & X                       & X                      & X                          & X                         & X          \\
+        {\tt vim}         & File being opened          & --                     & \tickmark: \textit{FN}  & \tickmark: \textit{FN}  & \tickmark: \textit{FN} & \tickmark: \textit{FN}     & \tickmark: \textit{FN}    & X          \\
+        {\tt nano}        & File being opened          & --                     & \tickmark               & \tickmark               & \tickmark              & X: \textit{FP}             & X: \textit{FP}            & X: \textit{FP} \\
+        {\tt sed}         & File being edited          & --                     & \tickmark               & X: \textit{FP}          & X                      & X                          & X                         & X          \\
+        {\tt wc}          & File being checked         & --                     & \tickmark               & X                       & X                      & X                          & X                         & X          \\
+        {\tt du}          & Directory being checked    & \tickmark              & --                      & \tickmark               & \tickmark              & \tickmark                  & \tickmark                 & \tickmark  \\
+        {\tt install}     & File being installed       & --                     & \tickmark               & X                       & X                      & X                          & \tickmark                 & X          \\
+        {\tt fmt}         & File being formatted       & --                     & X                       & \tickmark               & X                      & X                          & X                         & X          \\
+        {\tt od}          & File being dumped          & --                     & \tickmark               & \tickmark               & X                      & X                          & X                         & X          \\
+        {\tt ptx}         & File being read            & --                     & \tickmark               & \tickmark               & \tickmark              & \tickmark                  & \tickmark                 & \tickmark: \textit{FN} \\
+        {\tt comm}        & Second file being compared & --                     & \tickmark               & \tickmark               & X                      & X                          & X                         & X          \\
+        {\tt pr}          & File being read            & --                     & \tickmark               & X                       & X                      & X                          & X                         & X          \\
+\hline
+        \multicolumn{9}{l}{\scriptsize{\tickmark  $=$ CrashSimulator
+        predicts application will recognize anomaly}}\\
+        \multicolumn{9}{l}{\scriptsize{X $=$ CrashSimulator predicts
+        application will fail to recognize anomaly}}\\
+        \multicolumn{9}{l}{\scriptsize{-- $=$ File type expected by the
+        application}}\\
+    \bottomrule{}
+    \end{tabular}
+    \setlength{\belowcaptionskip}{-13pt}
+\end{table}
 \end{frame}
 
 
-\begin{frame}{Cross-Disk File Movement - The Takeaway}
+\begin{frame}{Aspell Bug Discussion}
+  \begin{itemize}
+    \item{Aspell did not resolve destination of symlinks before operating
+      on them.}
+    \item{Passing a symlink to /dev/urandom crashed application and filled
+      disk with garbage}
+    \item{Discovered by simulating presence of symlink rather than regular
+      file}
+    \item{Patch submitted and accepted}
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Unusual Filetypes - The Takeaway}
   \begin{itemize}
     \item{Applications fail to diligently check file types before operating
       on files leading to failures}
@@ -371,7 +447,33 @@ Problems to Avoid Future Failures}
 
 
 \begin{frame}{Cross-Disk File Movement Results}
-  Include table here
+ \begin{table}[t]
+    \scriptsize{}
+    \begin{tabular}{l p{1cm} p{1cm} p{1.2cm} p{1cm}}
+    \toprule{}
+        Application     & Source Replaced & Preserve Xattrs & Preserve Timestamps & Copying Devices\\
+\hline
+        {\tt mv}              & Correct             & Correct         & Correct             & Correct\\
+        {\tt mmv}             & Correct             & {\bf Sec. Flaw} & {\bf Time Loss} & Correct\\
+        {\tt install}         & Correct             & {\bf Sec. Flaw} & {\bf Time Loss} & {\bf Fill Disk} \\
+        {\tt perl File::Copy} & Correct             & {\bf Sec. Flaw} & {\bf Time Loss} & {\bf Fill Disk} \\
+        {\tt shutils}         & {\bf Corrupt}	& {\bf Sec. Flaw} 	& Correct             & Correct\\
+        {\tt rust}             & Correct             & {\bf Sec. Flaw} & {\bf Time Loss} & {\bf Fill Disk} \\
+        {\tt boost::copyfile} & {\bf Corrupt}	      & {\bf Sec. Flaw} & {\bf Time Loss} & {\bf Fill Disk} \\
+    \bottomrule{}
+    \end{tabular}
+\end{table}
+\end{frame}
+
+
+\begin{frame}{Python shutil race condition}
+  \begin{itemize}
+    \item{shutil.copyfile() fails to save and check file inode before
+      copying it}
+    \item{File can be replaced during move: security issue}
+    \item{Detected with Cross-Disk move checkers and Null Mutator}
+    \item{Patch submitted, fix in progress}
+  \end{itemize}
 \end{frame}
 
 
@@ -400,7 +502,24 @@ Problems to Avoid Future Failures}
 
 
 \begin{frame}{Extremely Long Network Timeouts Results}
-  Include results table here
+\begin{table}[t]
+  \scriptsize{}
+  \begin{tabular}{l | l}
+    \toprule{}
+    {\bf Application}              & {\bf Analysis Result}\\
+    {\tt wget}                     & Overly long timeout supplied to {\tt select()} \\
+    {\tt ftp}                      & No {\tt poll()} or {\tt select()}, no timeout set \\
+    {\tt telnet}                   & {\tt select()} specifies no timeout \\
+    {\tt urllib http}              & No {\tt poll()} or {\tt select()}, no timeout set \\
+    {\tt urllib ftp}               & No {\tt poll()} or {\tt select()}, no timeout set \\
+    {\tt ftplib}                   & No {\tt poll()} or {\tt select()}, no timeout set \\
+    {\tt httplib}                  & No {\tt poll()} or {\tt select()}, no timeout set \\
+    {\tt requests}                 & No {\tt poll()} or {\tt select()}, no timeout set \\
+    {\tt urllib3}                  & No {\tt poll()} or {\tt select()}, no timeout set \\
+    {\tt python-websocket-client}  & No {\tt poll()} or {\tt select()}, no timeout set \\
+    \bottomrule{}
+  \end{tabular}
+\end{table}
 \end{frame}
 
 
