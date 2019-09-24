@@ -31,15 +31,19 @@ Problems to Avoid Future Failures}
 
 
 \begin{frame}{Deployment Bugs are Frequent and Expensive}
+    % Maybe include logos for these organizations/citations etc
+    % rather than specific citations
   \begin{itemize}
     \item{On this slide I should I mention the ClusterHQ/Oracle/Microsoft
       studies we talk about in the paper intro?}
-    \item{A major factor in this is differing environments...}
+    \item{A primary cause is differing environments}
   \end{itemize}
 \end{frame}
 
+
 \begin{frame}{How Does an Environment Influence an Application?}
   \begin{itemize}
+    % an environment is anything out of the developer's control
     \item{Programs do not execute in isolation}
     \item{Instead, they operate:}
       \begin{itemize}
@@ -49,6 +53,7 @@ Problems to Avoid Future Failures}
     \item{Developers have become very good at testing applications by
       manipulating inputs}
       \begin{itemize}
+        % Environmental influences have not received as much concern
         \item{But environments affect execution as well}
       \end{itemize}
   \end{itemize}
@@ -70,6 +75,7 @@ Problems to Avoid Future Failures}
 \begin{frame}{Environments Differ on Many Levels}
   \begin{itemize}
     \item{Versions of libraries and software dependencies}
+    % Maybe use reliability or dependability instead of condition here
     \item{Condition of the network on which the application relies}
     \item{Operating system states, which can vary}
       \begin{itemize}
@@ -91,12 +97,16 @@ Problems to Avoid Future Failures}
   \end{itemize}
   Failure to deal with these conditions results in incorrect behavior --- i.e.\ bugs.
 
+  % Identifying these bugs is hard because there are two many variations to
+  % test against
   These bugs are hard to identify because setting up different environments is
   expensive.
 \end{frame}
 
 
 \begin{frame}{What is needed...}
+  % Put some kind of visual element in here to take up some of the white
+  % space
   \begin{itemize}
     \item{Is a methodical way to record, preserve, and test against
       problematic environmental features}
@@ -117,6 +127,8 @@ Problems to Avoid Future Failures}
 
 
 \begin{frame}{Simulating Environmental Anomalies (SEA)}
+  % Point that says what SEA does.  Almost something like the content in
+  % the title
   \begin{itemize}
     \item{SEA allows its users to:}
       \begin{itemize}
@@ -146,6 +158,12 @@ Problems to Avoid Future Failures}
 
 
 \begin{frame}{SEA on the Half-Shell}
+  % Mention mutators and checkers here so they're good and defined for the
+  % next slide
+
+  % To this from the point of view that you have a new application and you
+  % want to test it against the repository of prior knowledge of problems
+  % from other application
   \begin{enumerate}
     \item{Record an application as it fails in an anomalous environment}
     \item{Analyze the recording to identify what aspects of the environment
@@ -157,8 +175,9 @@ Problems to Avoid Future Failures}
 
 
 \begin{frame}{Generic Example}
+  % This may be too esoteric for a presentation
   \begin{enumerate}
-    \item{An application runs fails an environment because problematic
+    \item{An application fails in an environment because problematic
       feature $X$ is present}
     \item{$X$ is analyzed to determine how it causes environmental
       interactions to differ (we call this difference $\Delta X$)}
@@ -196,8 +215,9 @@ Problems to Avoid Future Failures}
 
 
 \begin{frame}{Identifying and Encoding Anomalies}
+  % Subheading to show this is steps in the process
   \begin{itemize}
-    \item{Anomaly is found by:}
+    \item{An anomaly is found by:}
       \begin{itemize}
         \item{Examining previous failures in the target environment}
         \item{Mining public bug trackers}
@@ -212,11 +232,12 @@ Problems to Avoid Future Failures}
 
 
 \begin{frame}{Mutating System Call Results}
+  % Subheading to show this is steps in the process
   \begin{itemize}
     \item{Execute application while monitoring its system call activity}
     \item{Mutator receives system calls as they occur and watches for pattern
       indicative of a simulation opportunity}
-    \item{Once opportunity arrives, mutator modifies results and side effects
+    \item{Once the opportunity arrives, mutator modifies results and side effects
       in order to simulate the anomaly}
   \end{itemize}
 \end{frame}
@@ -276,6 +297,7 @@ Problems to Avoid Future Failures}
 
 
 \begin{frame}{Assessing the Response of an Application}
+  % Subheading to show this is steps in the process
   \begin{itemize}
     \item{Checker begins monitoring subsequent system call activity
       after anomaly is simulated}
@@ -313,6 +335,8 @@ Problems to Avoid Future Failures}
 
 
 \begin{frame}{Architecture Discussion}
+  % Maybe multiple slices of the above image with each of these points
+  % below to illustrate which part does what
   \begin{itemize}
     \item{rr replays application under test until simulation opportunity
       arises}
@@ -344,6 +368,7 @@ Problems to Avoid Future Failures}
 
 
 \begin{frame}{Anomalies Used}
+  % Change the title of this slide so it transitions better
   \begin{itemize}
     \item{Unexpected Linux File Types}
     \item{Cross-disk File Movement}
@@ -353,6 +378,7 @@ Problems to Avoid Future Failures}
 
 
 \begin{frame}{Unexpected Linux File Types}
+  % Unifying subhead that shows we are working through anomalies
   \begin{itemize}
     \item{Linux provides different types of files with different capabilities}
     \item{Application should confirm file type before processing a file}
@@ -368,6 +394,7 @@ Problems to Avoid Future Failures}
 
 
 \begin{frame}{Unusual File Type Bugs}
+  % Unifying subhead that shows we are working through anomalies
 %\begin{table}[t]
 %    \scriptsize{}
 %    \begin{tabular}{l  l  |  l  l  l  l  l  l  l}
@@ -406,6 +433,9 @@ Problems to Avoid Future Failures}
 
 
 \begin{frame}{Aspell Bug Discussion}
+  % Unifying subhead that shows we are working through anomalies
+
+  % Maybe put mini-case study in the subheading
   \begin{itemize}
     \item{Aspell did not resolve destination of symlinks before operating
       on them.}
@@ -419,6 +449,12 @@ Problems to Avoid Future Failures}
 
 
 \begin{frame}{Unusual Filetypes - The Takeaway}
+  % Unifying subhead that shows we are working through anomalies
+
+  % Learned that applications fail to check file types before operating on
+  % them
+  % % This means that.... developers need to pay more attention to
+  % performing these checks
   \begin{itemize}
     \item{Applications fail to diligently check file types before operating
       on files leading to failures}
@@ -427,6 +463,9 @@ Problems to Avoid Future Failures}
 
 
 \begin{frame}{Cross-Disk File Movement Discussion}
+  % Unifying subhead that shows we are working through anomalies
+
+  % Maybe split this content out over two slides
   \begin{itemize}
     \item{Moving a file around on the same disk is trivial: rename() system
       call}
@@ -435,6 +474,7 @@ Problems to Avoid Future Failures}
     \item{An application must detect this situation and either fail
       gracefully or perform the file move ``manually''}
     \item{Otherwise, problems:}
+      % Maybe split it here?
       \begin{itemize}
         \item{Loss of file contents}
         \item{Loss of file metadata}
@@ -449,6 +489,7 @@ Problems to Avoid Future Failures}
 
 
 \begin{frame}{Cross-Disk File Movement Results}
+  % Unifying subhead that shows we are working through anomalies
  \begin{table}[t]
     \scriptsize{}
     \begin{tabular}{l p{1cm} p{1cm} p{1.2cm} p{1cm}}
@@ -469,6 +510,9 @@ Problems to Avoid Future Failures}
 
 
 \begin{frame}{Python shutil race condition}
+  % Unifying subhead that shows we are working through anomalies
+
+  % Maybe put mini-case study in the subheading
   \begin{itemize}
     \item{shutil.copyfile() fails to save and check file inode before
       copying it}
@@ -480,13 +524,23 @@ Problems to Avoid Future Failures}
 
 
 \begin{frame}{Cross-Disk File Movement - The Takeaway}
+  % Unifying subhead that shows we are working through anomalies
   \begin{itemize}
     \item{Well known, popular applications are not moving files correctly}
+      % Take the point a little further like in the above takeaway slide
   \end{itemize}
 \end{frame}
 
 
 \begin{frame}{Extremely Long Network Timeouts Discussion}
+  % Move network timeout bugs to be the middle item of discussion because
+  % we don't have a real example to talk about making it weaker from a
+  % presentation perspective
+
+  % Unifying subhead that shows we are working through anomalies
+
+  % Shorten the sentences while keeping the points to make this slide
+  % shorter
   \begin{itemize}
     \item{Applications that do not configure reasonable timeouts are vulnerable
       to a malicious communication participant dragging communication out over a
@@ -504,6 +558,7 @@ Problems to Avoid Future Failures}
 
 
 \begin{frame}{Extremely Long Network Timeouts Results}
+  % Unifying subhead that shows we are working through anomalies
 \begin{table}[t]
   \scriptsize{}
   \begin{tabular}{l | l}
@@ -526,9 +581,12 @@ Problems to Avoid Future Failures}
 
 
 \begin{frame}{Extremely Long Network Timeouts - The Takeaway}
+  % Unifying subhead that shows we are working through anomalies
   \begin{itemize}
     \item{Major applications and libraries are vulnerable to maliciously
       timed communications}
+
+    % Include "what are we supposed to do about it"
   \end{itemize}
 \end{frame}
 
@@ -538,10 +596,12 @@ Problems to Avoid Future Failures}
     \item{An application's environment is an often-neglected cause of bugs}
     \item{These bugs are difficult to find pre-deployment because replicating
       unusual environments is expensive}
+    % Hard to find because there are too many environment combinations to
+    % to test against
     \item{SEA helps find these bugs by simulating problematic environmental
       features in order to identify bugs before deployment, thereby
       saving time and expense}
-    \item{Our implementation of SEA, CrashSimualtor, has found these types
+    \item{Our implementation of SEA, CrashSimulator, has found these types
       of environmental bugs in both popular applications and libraries}
   \end{itemize}
 \end{frame}
