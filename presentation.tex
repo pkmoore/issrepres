@@ -14,6 +14,7 @@
 \usepackage{xspace}
 \usepackage{datetime}
 \usepackage{hyperref}
+\usepackage{textcomp}
 
 \newcommand{\tickmark}{\ding{51}}
 \newcommand{\xmark}{\ding{55}}
@@ -228,6 +229,15 @@ Problems to Avoid Future Failures}
 \end{frame}
 
 
+\begin{frame}{Implementing SEA}
+  \begin{itemize}
+    \item{Identifying and Encoding Anomalies}
+    \item{Mutating System Call Results}
+    \item{Assessing the Application's Response}
+  \end{itemize}
+\end{frame}
+
+
 \begin{frame}{Step 1: Identifying and Encoding Anomalies}
   \begin{itemize}
     \item{An anomaly is found by:}
@@ -244,8 +254,16 @@ Problems to Avoid Future Failures}
 \end{frame}
 
 
+\begin{frame}{Implementing SEA}
+  \begin{itemize}
+    \item{Identifying and Encoding Anomalies}
+    \item{\textrightarrow{}Mutating System Call Results\textleftarrow{}}
+    \item{Assessing the Application's Response}
+  \end{itemize}
+\end{frame}
+
+
 \begin{frame}{Step 2: Mutating System Call Results}
-  % Subheading to show this is steps in the process
   \begin{itemize}
     \item{Execute application while monitoring its system call activity}
     \item{Mutator receives system calls as they occur and watches for pattern
@@ -256,61 +274,16 @@ Problems to Avoid Future Failures}
 \end{frame}
 
 
-% \begin{frame}{Replaying a System Call: The Ideal Case}
-%   \begin{itemize}
-%   \item{Intercept the system call and reproduce its results and side effects}
-%     \begin{itemize}
-%     \item{All ``simple'' system calls}
-%     \item{All system calls involving file descriptors that do not really exist}
-%       \begin{itemize}
-%       \item{That is, file descriptors produced from system calls that we
-%           previously intercepted and handled}
-%       \end{itemize}
-%     \end{itemize}
-%   \item{Convert system call into a call to getpid()}
-%   \item{Parse corresponding line from system call trace}
-%   \item{Update register values and memory contents to reflect the results we
-%       \textbf{parsed out of the trace}}
-%   \end{itemize}
-% \end{frame}
-%
-%
-% \begin{frame}{Replaying a System Call: When The Ideal Case Does Not Work}
-%   \begin{itemize}
-%   \item{The effects of some system calls are too complex to deal with}
-%     \begin{itemize}
-%     \item{e.g.\ mmap()}
-%     \end{itemize}
-%   \item{In this case we allow them to be executed natively by:}
-%     \begin{itemize}
-%       \item{Instructing ptrace to allow the application to execute until the
-%           next system call}
-%       \item{Checking upcoming system call to ensure it matches the corresponding
-%           line from the trace being replayed}
-%       \item{Restarting execution of the application, thereby allowing it to
-%           actually make a real system call}
-%       \item{Checking the results to ensure they, too, match the results from the
-%           corresponding line in the trace being replayed}
-%     \end{itemize}
-%   \end{itemize}
-% \end{frame}
-%
-%
-% \begin{frame}{Replaying a System Call Trace}
-%   \begin{itemize}
-%   \item{Execute application}
-%   \item{Use Linux's Ptrace facilities to interrupt execution at every system
-%       call}
-%   \item{Adjust program state to match contents of system call trace}
-%   \item{Because replay process ensures system calls respond the same way as they
-%       did when the trace was recorded, the application will follow the same
-%       execution}
-%   \end{itemize}
-% \end{frame}
+\begin{frame}{Implementing SEA}
+  \begin{itemize}
+    \item{Identifying and Encoding Anomalies}
+    \item{Mutating System Call Results}
+    \item{\textrightarrow{}Assessing the Application's Response\textleftarrow{}}
+  \end{itemize}
+\end{frame}
 
 
-\begin{frame}{Step 3: Assessing the Response of an Application}
-  % Subheading to show this is steps in the process
+\begin{frame}{Step 3: Assessing the Application's Response}
   \begin{itemize}
     \item{Checker begins monitoring subsequent system call activity
       after anomaly is simulated}
