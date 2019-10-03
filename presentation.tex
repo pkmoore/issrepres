@@ -322,6 +322,32 @@ Problems to Avoid Future Failures}
 \end{frame}
 
 
+\begin{frame}{Additional Features}
+  %  Move up to be part of SEA rather than CrashSimulator
+  \begin{itemize}
+    \item{Default Checker}
+    \item{Accepts or rejects executions based on whether or not the
+      application has changed its behavior in response to an anomaly}
+      \begin{itemize}
+        \item{Changed behavior: possibly addressing anomaly: accept}
+        \item{No change: anomaly not recognized: reject}
+        \item{This distinction proved sufficient in the majority of cases}
+      \end{itemize}
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Additional Features}
+  \begin{itemize}
+    \item{Null Mutator}
+      \begin{itemize}
+        \item{Performs no mutation but provides opportunity for a checker to
+          evaluate an unmodified execution}
+      \end{itemize}
+  \end{itemize}
+\end{frame}
+
+
 \begin{frame}{CrashSimulator: A Proof of Concept SEA Implementation}
 
   Implementation Building Blocks:
@@ -385,32 +411,6 @@ Problems to Avoid Future Failures}
   \begin{itemize}
     \item{CrashSimulator process supervisor attaches to cloned process set
       and modifies system call results to simulate an anomaly}
-  \end{itemize}
-\end{frame}
-
-
-\begin{frame}{Additional Features}
-  %  Move up to be part of SEA rather than CrashSimulator
-  \begin{itemize}
-    \item{Default Checker}
-    \item{Accepts or rejects executions based on whether or not the
-      application has changed its behavior in response to an anomaly}
-      \begin{itemize}
-        \item{Changed behavior: possibly addressing anomaly: accept}
-        \item{No change: anomaly not recognized: reject}
-        \item{This distinction proved sufficient in the majority of cases}
-      \end{itemize}
-  \end{itemize}
-\end{frame}
-
-
-\begin{frame}{Additional Features}
-  \begin{itemize}
-    \item{Null Mutator}
-      \begin{itemize}
-        \item{Performs no mutation but provides opportunity for a checker to
-          evaluate an unmodified execution}
-      \end{itemize}
   \end{itemize}
 \end{frame}
 
@@ -495,10 +495,6 @@ Problems to Avoid Future Failures}
 \begin{frame}{Unusual Filetypes - The Takeaway}
   % Unifying subhead that shows we are working through anomalies
 
-  % Learned that applications fail to check file types before operating on
-  % them
-  % % This means that.... developers need to pay more attention to
-  % performing these checks
   \begin{itemize}
     \item{We learned that applications fail to diligently check file types
         before operating on files}
