@@ -375,13 +375,35 @@ Problems to Avoid Future Failures}
 
 
 \begin{frame}{Architecture Discussion}
-  % Maybe multiple slices of the above image with each of these points
-  % below to illustrate which part does what
+  \begin{figure}
+    \centering
+    \includegraphics[width = 0.9\textwidth]{images/architecture_replay}
+  \end{figure}
   \begin{itemize}
     \item{rr replays application under test until simulation opportunity
       arises}
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Architecture Discussion}
+  \begin{figure}
+    \centering
+    \includegraphics[width = 0.9\textwidth]{images/architecture_process_sets}
+  \end{figure}
+  \begin{itemize}
     \item{Modifications to rr allow complete process set of application to
       be cloned at this point}
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Architecture Discussion}
+  \begin{figure}
+    \centering
+    \includegraphics[width = 0.9\textwidth]{images/architecture_mutator_supervisor}
+  \end{figure}
+  \begin{itemize}
     \item{CrashSimulator process supervisor attaches to cloned process set
       and modifies system call results to simulate an anomaly}
   \end{itemize}
@@ -389,19 +411,26 @@ Problems to Avoid Future Failures}
 
 
 \begin{frame}{Architecture Discussion}
-  -- image of architecture slice --
+  \begin{figure}
+    \centering
+    \includegraphics[width = 0.9\textwidth]{images/architecture_checker_results}
+  \end{figure}
   \begin{itemize}
-    \item{rr replays application under test until simulation opportunity
-      arises}
+    \item{Checker analyzes application behavior post-simulation and reports
+      results}
   \end{itemize}
 \end{frame}
 
 
-\begin{frame}{Architecture Discussion}
-  -- image of architecture slice --
+\begin{frame}{Evaluation Overview}
   \begin{itemize}
-    \item{Modifications to rr allow complete process set of application to
-      be cloned at this point}
+    \item{Unexpected Linux File Types}
+    \item{Cross-disk File Movement}
+    \item{Extremely Long Network Timeouts}
+  \end{itemize}
+  \begin{itemize}
+    \item{CrashSimulator process supervisor attaches to cloned process set
+      and modifies system call results to simulate an anomaly}
   \end{itemize}
 \end{frame}
 
