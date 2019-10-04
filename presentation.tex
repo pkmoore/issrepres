@@ -34,25 +34,71 @@ Problems to Avoid Future Failures}
 \end{frame}
 
 
-% I am I plus my circumstances
+\begin{frame}{The Problem}
+  \begin{itemize}
+    \item{Applications work fine during development}
+    \item{and then fail in production}
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Why does this happen?}
+  \begin{figure}
+    \centering
+    \includegraphics[width = 0.7\textwidth]{images/dangerous}
+  \end{figure}
+\end{frame}
+
+
+\begin{frame}{Why does this happen}
+  \begin{figure}
+    \centering
+    \includegraphics[width = 0.5\textwidth]{images/appears}
+  \end{figure}
+\end{frame}
+
+
+\begin{frame}{Why does this happen}
+  \begin{figure}
+    \centering
+    \includegraphics[width = 0.5\textwidth]{images/uses}
+  \end{figure}
+\end{frame}
+
+
+\begin{frame}{Why does this happen}
+  \begin{figure}
+    \centering
+    \includegraphics[width = 0.5\textwidth]{images/supereffective}
+  \end{figure}
+\end{frame}
+
 
 \begin{frame}{Deployment Bugs are Frequent and Expensive}
     % Maybe include logos for these organizations/citations etc
     % rather than specific citations
   \begin{itemize}
-    \item{ClusterHQ: 10-25\% of developer time spent on production bugs}
-    \item{Microsoft: 1:1 ratio of testers to developers}
+    % Prevalence
     \item{Oracle: 40\% of deployed applications contain critical flaws}
     \item{A primary cause is differing environments}
+    % Cost
+    \item{ClusterHQ: 10-25\% of developer time spent on production bugs}
+    % We all know how expensive developers are
+    % Damage
+    \item{Microsoft: 1:1 ratio of testers to developers}
+    \item{Google: Recent chrome bug rendered Mac\'s unbootable}
+    % But patches still come out that hose machines
   \end{itemize}
-  % Setting up the problem
-  % They come up after the testing.  Not something the developer can plan
-  % Talk about one point from each of these things
-
-  % Prevalence
-  % Damage Caused
-  % Cost to fix
 \end{frame}
+
+
+%\begin{frame}{How Does an Environment Influence an Application?}
+%  \begin{quote}
+%    \LARGE
+%    ``I am I and my circumstance...''
+%  \end{quote}
+%  \hspace*{\fill} --- Jos\'{e} Ortega y Gasset
+%\end{frame}
 
 
 \begin{frame}{How Does an Environment Influence an Application?}
@@ -118,7 +164,6 @@ Problems to Avoid Future Failures}
 
 
 \begin{frame}{What is needed...}
-  -Aesthetically pleasing visual element goes here-
   \begin{itemize}
     \item{Is a methodical way to record, preserve, and test against
       problematic environmental features}
@@ -136,6 +181,23 @@ Problems to Avoid Future Failures}
 %       environmental conditions \textbf{BEFORE} they are deployed}
 %   \end{itemize}
 % \end{frame}
+
+
+\begin{frame}{What is needed...}
+  \begin{figure}
+    \centering
+    \includegraphics[width = 0.5\textwidth]{images/wascaught}
+  \end{figure}
+\end{frame}
+
+
+\begin{frame}{What is needed...}
+  \begin{figure}
+    \centering
+    \includegraphics[width = 0.5\textwidth]{images/notveryeffective}
+  \end{figure}
+\end{frame}
+
 
 \begin{frame}{Simulating Environmental Anomalies (SEA)}
   \begin{itemize}
@@ -353,7 +415,7 @@ Problems to Avoid Future Failures}
 \begin{frame}{Architecture Discussion}
   \begin{figure}
     \centering
-    \includegraphics[width = 0.9\textwidth]{images/architecture_replay}
+    \includegraphics[width = 0.7\textwidth]{images/architecture_replay}
   \end{figure}
   \begin{itemize}
     \item{rr replays application under test until simulation opportunity
@@ -365,7 +427,7 @@ Problems to Avoid Future Failures}
 \begin{frame}{Architecture Discussion}
   \begin{figure}
     \centering
-    \includegraphics[width = 0.9\textwidth]{images/architecture_process_sets}
+    \includegraphics[width = 0.7\textwidth]{images/architecture_process_sets}
   \end{figure}
   \begin{itemize}
     \item{Modifications to rr allow complete process set of application to
@@ -377,7 +439,7 @@ Problems to Avoid Future Failures}
 \begin{frame}{Architecture Discussion}
   \begin{figure}
     \centering
-    \includegraphics[width = 0.9\textwidth]{images/architecture_mutator_supervisor}
+    \includegraphics[width = 0.7\textwidth]{images/architecture_mutator_supervisor}
   \end{figure}
   \begin{itemize}
     \item{CrashSimulator process supervisor attaches to cloned process set
@@ -389,33 +451,11 @@ Problems to Avoid Future Failures}
 \begin{frame}{Architecture Discussion}
   \begin{figure}
     \centering
-    \includegraphics[width = 0.9\textwidth]{images/architecture_checker_results}
+    \includegraphics[width = 0.7\textwidth]{images/architecture_checker_results}
   \end{figure}
   \begin{itemize}
     \item{Checker analyzes application behavior post-simulation and reports
       results}
-  \end{itemize}
-\end{frame}
-
-
-\begin{frame}{Evaluation Overview}
-  \begin{itemize}
-    \item{Unexpected Linux File Types}
-    \item{Cross-disk File Movement}
-    \item{Extremely Long Network Timeouts}
-  \end{itemize}
-  \begin{itemize}
-    \item{CrashSimulator process supervisor attaches to cloned process set
-      and modifies system call results to simulate an anomaly}
-  \end{itemize}
-\end{frame}
-
-
-\begin{frame}{Architecture Discussion}
-  -- image of architecture slice --
-  \begin{itemize}
-    \item{CrashSimulator process supervisor attaches to cloned process set
-      and modifies system call results to simulate an anomaly}
   \end{itemize}
 \end{frame}
 
@@ -509,80 +549,7 @@ Problems to Avoid Future Failures}
 \end{frame}
 
 
-\begin{frame}{Eval Part 2: Cross-Disk File Movement Discussion}
-  % Unifying subhead that shows we are working through anomalies
-
-  % Maybe split this content out over two slides
-  \begin{itemize}
-    \item{Moving a file around on the same disk is trivial: rename() system
-      call}
-    \item{This system call does not support moving a file from one disk to
-      another}
-    \item{An application must detect this situation and either fail
-      gracefully or perform the file move ``manually''}
-  \end{itemize}
-\end{frame}
-
-
-\begin{frame}{Eval Part 2: Cross-Disk File Movement Discussion}
-    % Cross-filesystem rather than cross disk?
-    \begin{itemize}
-    \item{Otherwise, problems:}
-      \begin{itemize}
-        \item{Loss of file contents}
-        \item{Loss of file metadata}
-        \item{Race conditions}
-        \item{Filling of disk space}
-      \end{itemize}
-    \item{Race condition in Python's shutil}
-    \item{Loss of extended file attributes in Rust's std::fs}
-    \item{Fill disk space bug in C++'s Boost::filesystem}
-  \end{itemize}
-\end{frame}
-
-
-\begin{frame}{Cross-Disk File Movement Results}
-  % Unifying subhead that shows we are working through anomalies
- \begin{table}[t]
-    \scriptsize{}
-    \begin{tabular}{l p{1cm} p{1cm} p{1.2cm} p{1cm}}
-    \toprule{}
-        Application     & Source Replaced & Preserve Xattrs & Preserve Timestamps & Copying Devices\\
-\hline
-        {\tt mv}              & Correct             & Correct         & Correct             & Correct\\
-        {\tt mmv}             & Correct             & {\bf Sec. Flaw} & {\bf Time Loss} & Correct\\
-        {\tt install}         & Correct             & {\bf Sec. Flaw} & {\bf Time Loss} & {\bf Fill Disk} \\
-        {\tt perl File::Copy} & Correct             & {\bf Sec. Flaw} & {\bf Time Loss} & {\bf Fill Disk} \\
-        {\tt shutils}         & {\bf Corrupt}	& {\bf Sec. Flaw} 	& Correct             & Correct\\
-        {\tt rust}             & Correct             & {\bf Sec. Flaw} & {\bf Time Loss} & {\bf Fill Disk} \\
-        {\tt boost::copyfile} & {\bf Corrupt}	      & {\bf Sec. Flaw} & {\bf Time Loss} & {\bf Fill Disk} \\
-    \bottomrule{}
-    \end{tabular}
-\end{table}
-\end{frame}
-
-
-\begin{frame}{Cross-Disk File Movement Case Study: shutil race condition}
-  \begin{itemize}
-    \item{shutil.copyfile() fails to save and check file inode before
-      copying it}
-    \item{File can be replaced during move: security issue}
-    \item{Detected with Cross-Disk move checkers and Null Mutator}
-    \item{Patch submitted, fix in progress}
-  \end{itemize}
-\end{frame}
-
-
-\begin{frame}{Cross-Disk File Movement - The Takeaway}
-  \begin{itemize}
-    \item{Well known, popular applications are not moving files correctly}
-    \item{Developers should use libraries that handle these cases
-        correctly}
-  \end{itemize}
-\end{frame}
-
-
-\begin{frame}{Eval Part 3: Extremely Long Network Timeouts Discussion}
+\begin{frame}{Eval Part 2: Extremely Long Network Timeouts Discussion}
   % Move network timeout bugs to be the middle item of discussion because
   % we don't have a real example to talk about making it weaker from a
   % presentation perspective
@@ -640,6 +607,81 @@ Problems to Avoid Future Failures}
     \item{Libraries should consider shorter defaults}
   \end{itemize}
 \end{frame}
+
+
+\begin{frame}{Eval Part 3: Cross-Disk File Movement Discussion}
+  % Unifying subhead that shows we are working through anomalies
+
+  % Maybe split this content out over two slides
+  \begin{itemize}
+    \item{Moving a file around on the same disk is trivial: rename() system
+      call}
+    \item{This system call does not support moving a file from one disk to
+      another}
+    \item{An application must detect this situation and either fail
+      gracefully or perform the file move ``manually''}
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Eval Part 3: Cross-Disk File Movement Discussion}
+    % Cross-filesystem rather than cross disk?
+    \begin{itemize}
+    \item{Otherwise, problems:}
+      \begin{itemize}
+        \item{Loss of file contents}
+        \item{Loss of file metadata}
+        \item{Race conditions}
+        \item{Filling of disk space}
+      \end{itemize}
+    \item{Race condition in Python's shutil}
+    \item{Loss of extended file attributes in Rust's std::fs}
+    \item{Fill disk space bug in C++'s Boost::filesystem}
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Cross-Disk File Movement Results}
+  % Unifying subhead that shows we are working through anomalies
+ \begin{table}[t]
+    \scriptsize{}
+    \begin{tabular}{l p{1cm} p{1cm} p{1.2cm} p{1cm}}
+    \toprule{}
+        Application     & Source Replaced & Preserve Xattrs & Preserve Timestamps & Copying Devices\\
+\hline
+        {\tt mv}              & Correct             & Correct         & Correct             & Correct\\
+        {\tt mmv}             & Correct             & {\bf Sec. Flaw} & {\bf Time Loss} & Correct\\
+        {\tt install}         & Correct             & {\bf Sec. Flaw} & {\bf Time Loss} & {\bf Fill Disk} \\
+        {\tt perl File::Copy} & Correct             & {\bf Sec. Flaw} & {\bf Time Loss} & {\bf Fill Disk} \\
+        {\tt shutils}         & {\bf Corrupt}	& {\bf Sec. Flaw} 	& Correct             & Correct\\
+        {\tt rust}             & Correct             & {\bf Sec. Flaw} & {\bf Time Loss} & {\bf Fill Disk} \\
+        {\tt boost::copyfile} & {\bf Corrupt}	      & {\bf Sec. Flaw} & {\bf Time Loss} & {\bf Fill Disk} \\
+    \bottomrule{}
+    \end{tabular}
+\end{table}
+\end{frame}
+
+
+\begin{frame}{Cross-Disk File Movement Case Study: shutil race condition}
+  \begin{itemize}
+    \item{shutil.copyfile() fails to save and check file inode before
+      copying it}
+    \item{File can be replaced during move: security issue}
+    \item{Detected with Cross-Disk move checkers and Null Mutator}
+    \item{Patch submitted, fix in progress}
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Cross-Disk File Movement - The Takeaway}
+  \begin{itemize}
+    \item{Well known, popular applications are not moving files correctly}
+    \item{Developers should use libraries that handle these cases
+        correctly}
+  \end{itemize}
+\end{frame}
+
+
 
 % Maybe a future work slide here
 
