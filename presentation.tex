@@ -29,6 +29,14 @@ Problems to Avoid Future Failures}
 \begin{document}
 
 
+% introduce system calls earlier
+% Fix that one slide
+% More simulator-like analogy
+% It's super effective vs its not very effective explanation
+% Test pilots and planes 
+
+
+
 \begin{frame}
   \titlepage{}
 \end{frame}
@@ -49,6 +57,17 @@ Problems to Avoid Future Failures}
   \end{figure}
 \end{frame}
 
+% What this happens is best summed up with a pokemon analogy
+% In pokemon, the main character is unceremoniously thrown into the wild
+% ends up encountering all sorts of dangerous monsters that give him a hard
+% time
+
+% In the same way, applications are deployed to "dangerous" environments
+% and end up failing with trouble pops up.
+
+% running example graphic alongside lots of slides that tracks through
+
+% case in-sensitive and example is a write
 
 \begin{frame}{Why does this happen}
   \begin{figure}
@@ -56,6 +75,8 @@ Problems to Avoid Future Failures}
     \includegraphics[width = 0.5\textwidth]{images/appears}
   \end{figure}
 \end{frame}
+
+%  Maybe they encounter a weird linux setup
 
 
 \begin{frame}{Why does this happen}
@@ -65,6 +86,9 @@ Problems to Avoid Future Failures}
   \end{figure}
 \end{frame}
 
+% And it has a case sensitive filesystem.
+% If your application isn't ready for this...
+
 
 \begin{frame}{Why does this happen}
   \begin{figure}
@@ -72,6 +96,9 @@ Problems to Avoid Future Failures}
     \includegraphics[width = 0.5\textwidth]{images/supereffective}
   \end{figure}
 \end{frame}
+
+
+% its going to have problems!
 
 
 \begin{frame}{Deployment Bugs are Frequent and Expensive}
@@ -103,7 +130,8 @@ Problems to Avoid Future Failures}
 
 \begin{frame}{How Does an Environment Influence an Application?}
   \begin{itemize}
-    \item{An environment is anything out of the developer's control}
+    \item{An environment is anything that is not an explicit input or
+      packaged along with the application}
     \item{Programs do not execute in isolation}
     \item{Instead, they operate:}
       \begin{itemize}
@@ -119,6 +147,9 @@ Problems to Avoid Future Failures}
       \end{itemize}
   \end{itemize}
 \end{frame}
+
+% Graphic illustrating application with its internals, input, and all the
+% other stuff coming in on it
 
 
 \begin{frame}{What Does an Environment Provide to an Application?}
@@ -190,6 +221,9 @@ Problems to Avoid Future Failures}
   \end{figure}
 \end{frame}
 
+%  To bring back the pokemon analogy, we need to catch the weird aspects
+% of these environments so that can be useful to us in the future
+
 
 \begin{frame}{What is needed...}
   \begin{figure}
@@ -197,6 +231,10 @@ Problems to Avoid Future Failures}
     \includegraphics[width = 0.5\textwidth]{images/notveryeffective}
   \end{figure}
 \end{frame}
+
+
+% That way when we encounter the same environmental condition again,
+% Its not every effective...
 
 
 \begin{frame}{Simulating Environmental Anomalies (SEA)}
@@ -254,6 +292,7 @@ Problems to Avoid Future Failures}
 \end{frame}
 
 
+% Cut this slide and say that it is defined more formally in the paper
 \begin{frame}{Generic Example}
   % Specify that delta X does not need to be a integer
   \begin{enumerate}
@@ -269,6 +308,7 @@ Problems to Avoid Future Failures}
       to $X$}
   \end{enumerate}
 \end{frame}
+
 
 
 \begin{frame}{An Concrete Example - Simulating the ``Absence'' of a File}
@@ -359,6 +399,10 @@ Problems to Avoid Future Failures}
   \end{itemize}
 \end{frame}
 
+% Summary slide here
+% Talk about the two special cases
+% Images showing them as special cases
+
 
 \begin{frame}{Additional Features}
   %  Move up to be part of SEA rather than CrashSimulator
@@ -402,6 +446,11 @@ Problems to Avoid Future Failures}
   \end{itemize}
 \end{frame}
 
+
+% Emphasize that this is the new program program being tested with the
+% learnings from previous failures
+% Maybe existing test set but with additional checkers and mutators
+% coming into the picture as well
 
 \begin{frame}{CrashSimulator's Architecture}
   % Colored box tracking the pieces we're talking about
@@ -469,6 +518,11 @@ Problems to Avoid Future Failures}
 \end{frame}
 
 
+% Across the board spend more time talking about the checkers and mutators
+% that found the particular bugs
+
+% In the takeaways make sure to mention the checker/mutators that found the
+% bugs
 \begin{frame}{Eval Part 1: Unexpected Linux File Types}
   \begin{itemize}
     \item{Linux provides different types of files with different capabilities}
@@ -636,7 +690,6 @@ Problems to Avoid Future Failures}
       \end{itemize}
     \item{Race condition in Python's shutil}
     \item{Loss of extended file attributes in Rust's std::fs}
-    \item{Fill disk space bug in C++'s Boost::filesystem}
   \end{itemize}
 \end{frame}
 
